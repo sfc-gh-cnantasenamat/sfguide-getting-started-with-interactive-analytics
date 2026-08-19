@@ -23,7 +23,7 @@ Here's how interactive warehouses and tables fits in for a typical data analytic
 - The core concepts behind Snowflake's Interactive Warehouses and Tables and how they provide low-latency analytics.
 - How to create and configure an Interactive Warehouse using SQL.
 - The process of creating an Interactive Table from an existing standard table.
-- How zero-copy interactive analytics (public preview) lets an Interactive Warehouse query standard and Iceberg tables directly, with no conversion required.
+- How zero-copy interactive analytics (public preview) lets an Interactive Warehouse query standard tables directly, with no conversion required.
 - How to attach a table to an Interactive Warehouse to pre-warm the data cache for faster queries.
 - A methodology for benchmarking and comparing the query latency of an interactive setup versus a standard warehouse.
 
@@ -46,7 +46,7 @@ Think of them as a high-performance pair. Interactive tables are structured for 
 ![](assets/interactive-tables-and-warehouses.png)
 
 ### Interactive Warehouses
-An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables and, with zero-copy interactive analytics (in public preview), standard tables and Iceberg tables directly.
+An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables and, with zero-copy interactive analytics (in public preview), standard tables directly.
 
 ### Interactive Tables
 Interactive tables have different methods for data ingestion and support a more limited set of SQL statements and query operators than standard Snowflake tables.
@@ -54,9 +54,9 @@ Interactive tables have different methods for data ingestion and support a more 
 ### Zero-copy interactive analytics (Public Preview)
 
 > aside positive
-> Querying standard tables and Iceberg tables through an interactive warehouse is in Public Preview and available to all accounts.
+> Querying standard tables through an interactive warehouse is in Public Preview and available to all accounts.
 
-Originally, an interactive warehouse could only query interactive tables, which meant you first had to copy or convert your data into an interactive table. With **zero-copy interactive analytics**, an interactive warehouse can now query your **standard tables and Iceberg tables (and their views) directly** — with no `CREATE INTERACTIVE TABLE`, no CTAS, and no `TARGET_LAG` refresh pipeline to manage.
+Originally, an interactive warehouse could only query interactive tables, which meant you first had to copy or convert your data into an interactive table. With **zero-copy interactive analytics**, an interactive warehouse can now query your **standard tables (and their views) directly** — with no `CREATE INTERACTIVE TABLE`, no CTAS, and no `TARGET_LAG` refresh pipeline to manage.
 
 This means you can simply point an interactive warehouse at the tables you already have:
 
@@ -95,7 +95,7 @@ Here are some limitations of interactive warehouses and interactive tables:
 - An interactive warehouse is always up and running by design. You can manually suspend the warehouse, but expect significant query latency when you resume the warehouse.
 - Snowflake interactive tables don't support ETL, long-running queries (more than 5 seconds), or data manipulation language (DML) commands such as `UPDATE` and `DELETE`.
 - Do modify data, you should update the data in source tables and either fully replace an interative table with new version, or use a dynamic table style incremental refresh by setting TARGET_LAG
-- With zero-copy interactive analytics (public preview), an interactive warehouse can query standard tables and Iceberg tables directly, in addition to interactive tables. Hybrid tables aren't supported; to query hybrid tables, switch to a standard warehouse.
+- With zero-copy interactive analytics (public preview), an interactive warehouse can query standard tables directly, in addition to interactive tables.
 - You can't run `CALL` commands to call stored procedures through interactive warehouse
 
 <!-- ------------------------ -->
