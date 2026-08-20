@@ -53,8 +53,7 @@ Interactive tables have different methods for data ingestion and support a more 
 
 ### Zero-copy interactive analytics (Public Preview)
 
-> aside positive
-> Querying standard tables through an interactive warehouse is in Public Preview and available to all accounts.
+> Note: Querying standard tables through an interactive warehouse is in Public Preview and available to all accounts.
 
 Originally, an interactive warehouse could only query interactive tables, which meant you first had to copy or convert your data into an interactive table. With **zero-copy interactive analytics**, an interactive warehouse can now query your **standard tables (and their views) directly** — with no `CREATE INTERACTIVE TABLE`, no CTAS, and no `TARGET_LAG` refresh pipeline to manage.
 
@@ -261,8 +260,7 @@ USE ROLE ACCOUNTADMIN;
 USE DATABASE MY_DEMO_DB;
 ```
 
-> aside positive
-> In a Snowflake Notebook, SQL and Python cells share the same session. Any `USE ROLE`, `USE DATABASE`, or `USE WAREHOUSE` statement you run in a SQL cell also applies to subsequent Python cells (and vice versa).
+> Note: In a Snowflake Notebook, SQL and Python cells share the same session. Any `USE ROLE`, `USE DATABASE`, or `USE WAREHOUSE` statement you run in a SQL cell also applies to subsequent Python cells (and vice versa).
 
 ### Create an interactive warehouse
 
@@ -290,8 +288,7 @@ INTERACTIVE WAREHOUSE INTERACTIVE_DEMO_B successfully created.
 
 ![](assets/create-interactive-table.png)
 
-> aside positive
-> With zero-copy interactive analytics (public preview), creating an interactive table is now optional — an interactive warehouse can query the standard `HITS2_CSV` table directly. We still create an interactive table here to demonstrate that path and to enable a head-to-head performance comparison later in this guide.
+> Note: With zero-copy interactive analytics (public preview), creating an interactive table is now optional — an interactive warehouse can query the standard `HITS2_CSV` table directly. We still create an interactive table here to demonstrate that path and to enable a head-to-head performance comparison later in this guide.
 
 Now, we'll use the standard `WH` warehouse to efficiently create our new interactive `CUSTOMERS` table by copying all the data from the original standard table:
 
@@ -325,8 +322,7 @@ USE DATABASE MY_DEMO_DB;
 ALTER WAREHOUSE interactive_demo_b ADD TABLES(BENCHMARK_INTERACTIVE.CUSTOMERS);
 ```
 
-> aside positive
-> `ADD TABLES` is a performance optimization, not a requirement. It proactively warms the warehouse's data cache so queries avoid a cold start. Any table you don't attach is still queryable and gets cached on demand the first time it's accessed. Proactive warming is currently limited to 10 tables.
+> Note: `ADD TABLES` is a performance optimization, not a requirement. It proactively warms the warehouse's data cache so queries avoid a cold start. Any table you don't attach is still queryable and gets cached on demand the first time it's accessed. Proactive warming is currently limited to 10 tables.
 
 Running the above statement should yield the following:
 ```
