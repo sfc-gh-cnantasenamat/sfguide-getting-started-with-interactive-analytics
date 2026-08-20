@@ -26,6 +26,7 @@ Columns: the quickstart/notebook section the change touched, which artifact it a
 | Run some queries concurrently | Quickstart, Notebook | Kept as the concurrent benchmark (logic unchanged). |
 | Section images (per section) | Notebook | Added inline images from local files, then removed them since the quickstart already shows each section image. |
 | All markdown callouts | Notebook | Prefixed each callout with the word Note and moved them to the bottom of their cells. |
+| Callouts (asides) | Quickstart | Replaced the deprecated aside positive directive with the current Note: blockquote convention. |
 | Notebook environment | Notebook | Removed the environment file since the required packages are pre-installed. |
 
 # Project-level actions
