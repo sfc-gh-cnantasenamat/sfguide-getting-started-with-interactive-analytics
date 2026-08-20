@@ -2,11 +2,11 @@
 
 Columns: the quickstart/notebook section the change touched, which artifact it applies to (Quickstart, Notebook, or Quickstart, Notebook), the originating request (if any), and what was done.
 
-Requested changes (from Slack feedback):
-- D1 — Davide: remove the version / account-parameter checks (Interactive Warehouses and Tables are GA and enabled by default).
-- D2 — Davide: use native SQL cells where possible instead of running SQL via Python, using the Snowflake Notebook's SQL/Python cells.
-- J1 — Jennifer: note that standard tables can be queried directly now (zero-copy) — no need to convert them to interactive tables.
-- J2 — Jennifer: add fallback warehouses for queries that run over 5 seconds.
+Requested changes (from the review feedback):
+- R1 — remove the version / account-parameter checks (Interactive Warehouses and Tables are GA and enabled by default).
+- R2 — use native SQL cells where possible instead of running SQL via Python, using the Snowflake Notebook's SQL/Python cells.
+- R3 — note that standard tables can be queried directly now (zero-copy) — no need to convert them to interactive tables.
+- R4 — add fallback warehouses for queries that run over 5 seconds.
 - "—" = not from an explicit request (consistency fix, cleanup, or follow-on).
 
 A code in the "Requested change" column means that request is addressed by the row's "What was done".
@@ -15,23 +15,23 @@ A code in the "Requested change" column means that request is addressed by the r
 | --- | --- | --- | --- |
 | Frontmatter (categories) | Quickstart | — | Replaced the incorrect hybrid-tables taxonomy tag with interactive-tables and interactive-warehouse. |
 | Prerequisites | Quickstart | — | Updated the required role to ACCOUNTADMIN. |
-| What You'll Learn | Quickstart | J1 | Added a bullet on zero-copy interactive analytics. |
-| Understand - Interactive Warehouses | Quickstart | J1 | Corrected the claim that interactive warehouses can only query interactive tables. |
-| Understand - Zero-copy interactive analytics | Quickstart | J1 | Added this new section: querying standard tables directly, ADD TABLES as an optional optimization, and the caveats (clustering, ten-table warming cap, five-second timeout, when to still use interactive tables). |
-| Understand - Limitations | Quickstart | J1 | Removed the incorrect claim that standard tables can't be queried; states standard tables are supported directly (dropped the tangential hybrid-tables and Iceberg-tables mentions). |
+| What You'll Learn | Quickstart | R3 | Added a bullet on zero-copy interactive analytics. |
+| Understand - Interactive Warehouses | Quickstart | R3 | Corrected the claim that interactive warehouses can only query interactive tables. |
+| Understand - Zero-copy interactive analytics | Quickstart | R3 | Added this new section: querying standard tables directly, ADD TABLES as an optional optimization, and the caveats (clustering, ten-table warming cap, five-second timeout, when to still use interactive tables). |
+| Understand - Limitations | Quickstart | R3 | Removed the incorrect claim that standard tables can't be queried; states standard tables are supported directly (dropped the tangential hybrid-tables and Iceberg-tables mentions). |
 | Setup - Optional: Create warehouse | Quickstart | — | Kept as the warehouse-creation step (the notebook creates the warehouse in its setup cell instead). |
 | Setup - Step 5: Query the data | Quickstart, Notebook | — | Aligned the preview query so both use the same statement (added the standard warehouse selection). |
-| Load libraries and define custom functions | Quickstart, Notebook | D2 | Trimmed to the libraries the benchmark needs and removed the print helper, unused imports, and leftover placeholder data. |
+| Load libraries and define custom functions | Quickstart, Notebook | R2 | Trimmed to the libraries the benchmark needs and removed the print helper, unused imports, and leftover placeholder data. |
 | Load libraries and define custom functions | Notebook | — | Reworded the package note to say the libraries come pre-installed; added the data-load library; removed the image library once inline images were dropped. |
-| Set up role, warehouse, and database | Quickstart, Notebook | D1, D2 | Removed the version and account-parameter checks, converted the step to a SQL cell, and set the role to ACCOUNTADMIN. |
+| Set up role, warehouse, and database | Quickstart, Notebook | R1, R2 | Removed the version and account-parameter checks, converted the step to a SQL cell, and set the role to ACCOUNTADMIN. |
 | Set up role, warehouse, and database | Notebook | — | Expanded the cell to also create the warehouse, database, and schemas if they do not already exist. |
 | The Data | Notebook | — | Added a self-contained, idempotent load that creates and fills the source table from the bundled file only when it is empty; removed the broken setup-script reference. |
-| Create an interactive warehouse | Quickstart, Notebook | D2 | Converted from Python to a native SQL cell. |
-| Create an interactive table | Quickstart, Notebook | D2, J1 | Converted to a SQL cell and added a note that this step is now optional (zero-copy). |
-| Attach interactive table to a warehouse | Quickstart, Notebook | D2, J1 | Converted to a SQL cell and added a note that attaching is a caching optimization, not a requirement. |
-| Configure a fallback warehouse | Quickstart, Notebook | J2 | Added this new section on re-running queries that exceed the five-second limit on a standard warehouse. |
-| Run queries with interactive warehouse | Quickstart, Notebook | D2 | Moved the session setup into a SQL cell; the timed query stays in Python. |
-| Compare to a standard warehouse | Quickstart, Notebook | D2 | Moved the session setup into a SQL cell; the timed query stays in Python. |
+| Create an interactive warehouse | Quickstart, Notebook | R2 | Converted from Python to a native SQL cell. |
+| Create an interactive table | Quickstart, Notebook | R2, R3 | Converted to a SQL cell and added a note that this step is now optional (zero-copy). |
+| Attach interactive table to a warehouse | Quickstart, Notebook | R2, R3 | Converted to a SQL cell and added a note that attaching is a caching optimization, not a requirement. |
+| Configure a fallback warehouse | Quickstart, Notebook | R4 | Added this new section on re-running queries that exceed the five-second limit on a standard warehouse. |
+| Run queries with interactive warehouse | Quickstart, Notebook | R2 | Moved the session setup into a SQL cell; the timed query stays in Python. |
+| Compare to a standard warehouse | Quickstart, Notebook | R2 | Moved the session setup into a SQL cell; the timed query stays in Python. |
 | Run some queries concurrently | Quickstart, Notebook | — | Kept as the concurrent benchmark (logic unchanged). |
 | Section images (per section) | Notebook | — | Added inline images from local files, then removed them since the quickstart already shows each section image. |
 | All markdown callouts | Notebook | — | Prefixed each callout with the word Note and moved them to the bottom of their cells. |
