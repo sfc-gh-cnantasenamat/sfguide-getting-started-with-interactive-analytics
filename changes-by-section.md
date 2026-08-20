@@ -7,6 +7,9 @@ Requested changes (from the review feedback):
 - R2 — use native SQL cells where possible instead of running SQL via Python, using the Snowflake Notebook's SQL/Python cells.
 - R3 — note that standard tables can be queried directly now (zero-copy) — no need to convert them to interactive tables.
 - R4 — add fallback warehouses for queries that run over 5 seconds.
+- R5 — clarify auto-suspend / auto-resume and the 24-hour minimum auto-suspend in Limitations.
+- R6 — call out configuring a fallback warehouse (protects p99) in the Limitations section.
+- R7 — fix the "modify data" limitation (typos, and clarify interactive tables vs. standard/dynamic tables).
 - "—" = not from an explicit request (consistency fix, cleanup, or follow-on).
 
 A code in the "Requested change" column means that request is addressed by the row's "What was done".
@@ -19,6 +22,9 @@ A code in the "Requested change" column means that request is addressed by the r
 | Understand - Interactive Warehouses | Quickstart | R3 | Corrected the claim that interactive warehouses can only query interactive tables. |
 | Understand - Zero-copy interactive analytics | Quickstart | R3 | Added this new section: querying standard tables directly, ADD TABLES as an optional optimization, and the caveats (clustering, ten-table warming cap, five-second timeout, when to still use interactive tables). |
 | Understand - Limitations | Quickstart | R3 | Removed the incorrect claim that standard tables can't be queried; states standard tables are supported directly (dropped the tangential hybrid-tables and Iceberg-tables mentions). |
+| Understand - Limitations | Quickstart | R5 | Clarified that interactive warehouses support auto-suspend/auto-resume, with a 24-hour minimum auto-suspend. |
+| Understand - Limitations | Quickstart | R6 | Called out configuring a fallback warehouse (protects p99) for queries that exceed the 5-second limit. |
+| Understand - Limitations | Quickstart | R7 | Fixed typos and clarified how to modify data: interactive tables need a base-table update/refresh; standard and dynamic tables need no extra step. |
 | Setup - Optional: Create warehouse | Quickstart | — | Kept as the warehouse-creation step (the notebook creates the warehouse in its setup cell instead). |
 | Setup - Step 5: Query the data | Quickstart, Notebook | — | Aligned the preview query so both use the same statement (added the standard warehouse selection). |
 | Load libraries and define custom functions | Quickstart, Notebook | R2 | Trimmed to the libraries the benchmark needs and removed the print helper, unused imports, and leftover placeholder data. |
