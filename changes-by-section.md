@@ -10,6 +10,7 @@ Requested changes (from the review feedback):
 - R5 — clarify auto-suspend / auto-resume and the 24-hour minimum auto-suspend in Limitations.
 - R6 — call out configuring a fallback warehouse (protects p99) in the Limitations section.
 - R7 — fix the "modify data" limitation (typos, and clarify interactive tables vs. standard/dynamic tables).
+- R8 — rewrite the Use cases section around the updated taxonomy / diagram (three domains as bullet points, no em/en dashes).
 - "—" = not from an explicit request (consistency fix, cleanup, or follow-on).
 
 A code in the "Requested change" column means that request is addressed by the row's "What was done".
@@ -20,7 +21,7 @@ A code in the "Requested change" column means that request is addressed by the r
 | Prerequisites | Quickstart | — | Updated the required role to ACCOUNTADMIN. |
 | What You'll Learn / Understand - Interactive Warehouses / Understand - Zero-copy | Quickstart | R3 (deferred) | Zero-copy content that was added earlier — the What You'll Learn bullet, the "standard tables directly" clause in Interactive Warehouses, and the whole "Zero-copy interactive analytics" section (with its SQL example) — was removed and saved to `zero-copy-deferred-content.md` for a future quickstart. The Interactive Warehouses paragraph now reads "can query interactive tables." |
 | Understand - Limitations | Quickstart | — | Dropped the tangential hybrid-tables and Iceberg-tables mentions, and removed the standalone zero-copy bullet (deferred with the rest of the zero-copy content). |
-| Understand - Use cases | Quickstart | — | Rewrote the section around a three-domain taxonomy (AI & Agents, Customer-Facing Data Apps, Operational Analytics) with new examples (low-cost RAG, AI observability, high-concurrency MCPs, embedded analytics, trading & risk, supply chain & inventory), and framed the shared requirements as low latency, high concurrency, fresh data, and low cost per query. The three domains are formatted as bullet points and the prose avoids em/en dashes. Replaced `use-cases.png` with the matching updated diagram. |
+| Understand - Use cases | Quickstart | R8 | Rewrote the section around a three-domain taxonomy (AI & Agents, Customer-Facing Data Apps, Operational Analytics) with new examples (low-cost RAG, AI observability, high-concurrency MCPs, embedded analytics, trading & risk, supply chain & inventory), and framed the shared requirements as low latency, high concurrency, fresh data, and low cost per query. The three domains are formatted as bullet points and the prose avoids em/en dashes. Replaced `use-cases.png` with the matching updated diagram. |
 | Understand - Limitations | Quickstart | R5 | Clarified that interactive warehouses support auto-suspend/auto-resume, with a 24-hour minimum auto-suspend. |
 | Understand - Limitations | Quickstart | R6 | Called out configuring a fallback warehouse (protects p99) for queries that exceed the 5-second limit. |
 | Understand - Limitations | Quickstart | R7 | Fixed typos and clarified how to modify data: interactive tables need a base-table update plus a full replace or TARGET_LAG refresh. (The zero-copy "standard table needs no extra step" clause was removed with the deferred content.) |
