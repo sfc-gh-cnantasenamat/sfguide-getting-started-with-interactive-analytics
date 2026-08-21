@@ -5,7 +5,6 @@ categories: snowflake-site:taxonomy/solution-center/certification/quickstart, sn
 language: en
 environments: web
 status: Published
-language: en
 
 # Getting Started with Snowflake Interactive Tables
 
