@@ -51,19 +51,17 @@ An interactive warehouse tunes the Snowflake engine specially for low-latency, i
 Interactive tables have different methods for data ingestion and support a more limited set of SQL statements and query operators than standard Snowflake tables.
 
 ### Use cases
-Interactive warehouses and interactive tables are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse — they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, this pairing is a strong fit.
+Interactive warehouses and interactive tables are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse. Instead, they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, this pairing is a strong fit.
 
 ![](assets/use-cases.png)
 
 Three domains capture where it matters most:
 
-**AI & Agents.** Agentic and AI-driven applications fire off large volumes of small, concurrent queries — a retrieval step here, a metric lookup there — and each one needs to come back instantly and cheaply. Interactive warehouses make this practical for low-cost RAG retrieval, AI observability (monitoring model and agent behavior in near real time), and high-concurrency MCP servers that expose your data to many agents at once.
+- **AI & Agents.** Agentic and AI-driven applications fire off large volumes of small, concurrent queries, such as a retrieval step here or a metric lookup there, and each one needs to come back instantly and cheaply. Interactive warehouses make this practical for low-cost RAG retrieval, AI observability (monitoring model and agent behavior in near real time), and high-concurrency MCP servers that expose your data to many agents at once.
+- **Customer-Facing Data Apps.** When query latency is visible to your end users, consistency matters as much as raw speed. This pairing powers data APIs that serve predictable, sub-second responses to customer-facing applications, embedded analytics inside your product, and live dashboards that stay responsive even under heavy, simultaneous use.
+- **Operational Analytics.** Internal, decision-driving workloads depend on fresh data and fast answers. Interactive warehouses and tables suit trading and risk management, infrastructure observability and alerting (high-throughput monitoring where every second counts), and supply chain and inventory tracking that must reflect the latest state of the business.
 
-**Customer-Facing Data Apps.** When query latency is visible to your end users, consistency matters as much as raw speed. This pairing powers data APIs that serve predictable, sub-second responses to customer-facing applications, embedded analytics inside your product, and live dashboards that stay responsive even under heavy, simultaneous use.
-
-**Operational Analytics.** Internal, decision-driving workloads depend on fresh data and fast answers. Interactive warehouses and tables suit trading and risk management, infrastructure observability and alerting (high-throughput monitoring where every second counts), and supply chain and inventory tracking that must reflect the latest state of the business.
-
-What unites all of these is the same set of requirements — low latency, high concurrency, fresh data, and low cost per query — met by simple queries repeated at scale. That is exactly the workload interactive warehouses and tables were designed for.
+What unites all of these is the same set of requirements, namely low latency, high concurrency, fresh data, and low cost per query, met by simple queries repeated at scale. That is exactly the workload interactive warehouses and tables were designed for.
 
 
 ### Limitations
