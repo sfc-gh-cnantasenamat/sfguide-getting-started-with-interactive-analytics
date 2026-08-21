@@ -23,7 +23,6 @@ Here's how interactive warehouses and tables fits in for a typical data analytic
 - The core concepts behind Snowflake's Interactive Warehouses and Tables and how they provide low-latency analytics.
 - How to create and configure an Interactive Warehouse using SQL.
 - The process of creating an Interactive Table from an existing standard table.
-- How zero-copy interactive analytics (public preview) lets an Interactive Warehouse query standard tables directly, with no conversion required.
 - How to attach a table to an Interactive Warehouse to pre-warm the data cache for faster queries.
 - A methodology for benchmarking and comparing the query latency of an interactive setup versus a standard warehouse.
 
@@ -46,44 +45,25 @@ Think of them as a high-performance pair. Interactive tables are structured for 
 ![](assets/interactive-tables-and-warehouses.png)
 
 ### Interactive Warehouses
-An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables and, with zero-copy interactive analytics (in public preview), standard tables directly.
+An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables.
 
 ### Interactive Tables
 Interactive tables have different methods for data ingestion and support a more limited set of SQL statements and query operators than standard Snowflake tables.
 
-### Zero-copy interactive analytics (Public Preview)
-
-> Note: Querying standard tables through an interactive warehouse is in Public Preview and available to all accounts.
-
-Originally, an interactive warehouse could only query interactive tables, which meant you first had to copy or convert your data into an interactive table. With **zero-copy interactive analytics**, an interactive warehouse can now query your **standard tables (and their views) directly** — with no `CREATE INTERACTIVE TABLE`, no CTAS, and no `TARGET_LAG` refresh pipeline to manage.
-
-This means you can simply point an interactive warehouse at the tables you already have:
-
-```sql
-CREATE OR REPLACE INTERACTIVE WAREHOUSE my_dashboard_wh WAREHOUSE_SIZE = 'XSMALL';
-USE WAREHOUSE my_dashboard_wh;
-
--- Query an existing standard table directly, no conversion required
-SELECT customer_segment, COUNT(*), SUM(revenue)
-FROM analytics.core.orders
-WHERE order_date >= CURRENT_DATE() - 30
-GROUP BY customer_segment;
-```
-
-With this approach, `ALTER WAREHOUSE ... ADD TABLES` is no longer a prerequisite; it becomes a performance *optimization*. Attaching a table proactively warms the warehouse's data cache so queries avoid a cold-start penalty, while any unattached table is still fully queryable and cached on demand the first time it's accessed.
-
-A few things to keep in mind:
-- Clustering source tables isn't required, but it's highly recommended for better partition pruning and performance.
-- Proactive cache warming with `ADD TABLES` is currently limited to 10 tables. This limits only what is pre-warmed, not what you can query.
-- Interactive warehouses cap query run time at 5 seconds. Configure a fallback warehouse so that longer queries transparently re-run on a standard warehouse instead of failing.
-- Interactive tables remain the best choice for workloads with the strictest tail-latency (p99) SLAs or specialized clustering needs.
-
 ### Use cases
-Snowflake interactive tables are optimized for fast, simple queries when you require consistent low-latency responses. Interactive warehouses provide the compute resources required to serve these queries efficiently. Together, they enable use cases such as live dashboards, data-powered APIs, and serving high-concurrency workloads.
+Interactive warehouses and interactive tables are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse — they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, this pairing is a strong fit.
 
 ![](assets/use-cases.png)
 
-Furthermore, this pairing of interactive warehouses and tables is ideal for a range of specific, demanding use cases where sub-second query performance is paramount. In industries like ad-tech, IoT, and video analytics, it can power near real-time decisioning on massive event streams. For application development, it enables highly responsive data-powered APIs and in-app user behavior analytics. It's also perfectly suited for internal analytics, providing the speed needed for live dashboards, BI acceleration, and critical observability/APM systems that require high-throughput alerting.
+Three domains capture where it matters most:
+
+**AI & Agents.** Agentic and AI-driven applications fire off large volumes of small, concurrent queries — a retrieval step here, a metric lookup there — and each one needs to come back instantly and cheaply. Interactive warehouses make this practical for low-cost RAG retrieval, AI observability (monitoring model and agent behavior in near real time), and high-concurrency MCP servers that expose your data to many agents at once.
+
+**Customer-Facing Data Apps.** When query latency is visible to your end users, consistency matters as much as raw speed. This pairing powers data APIs that serve predictable, sub-second responses to customer-facing applications, embedded analytics inside your product, and live dashboards that stay responsive even under heavy, simultaneous use.
+
+**Operational Analytics.** Internal, decision-driving workloads depend on fresh data and fast answers. Interactive warehouses and tables suit trading and risk management, infrastructure observability and alerting (high-throughput monitoring where every second counts), and supply chain and inventory tracking that must reflect the latest state of the business.
+
+What unites all of these is the same set of requirements — low latency, high concurrency, fresh data, and low cost per query — met by simple queries repeated at scale. That is exactly the workload interactive warehouses and tables were designed for.
 
 
 ### Limitations
@@ -93,8 +73,7 @@ The queries that work best with interactive tables are usually `SELECT` statemen
 Here are some limitations of interactive warehouses and interactive tables:
 - An interactive warehouse is designed to stay up and running. It supports auto-suspend and auto-resume, but the minimum auto-suspend interval is 24 hours (86400 seconds), so it suspends only after 24 hours of inactivity. You can also suspend and resume it manually. Either way, expect significant query latency right after a resume, while the data cache warms up again.
 - Interactive warehouses cancel any query that runs longer than 5 seconds, since they're tuned for short, low-latency queries. To protect p99 latency, configure a fallback warehouse so those queries are transparently re-run on a standard warehouse (see the "Configure a fallback warehouse" section below). Interactive tables also don't support ETL or data manipulation language (DML) commands such as `UPDATE` and `DELETE`.
-- To modify data: if you're using an interactive table, update the base (source) table and either fully replace the interactive table with a new version or use a dynamic-table-style incremental refresh (set `TARGET_LAG`). If you're querying a standard table directly, no additional step is needed — changes to the source data are reflected automatically.
-- With zero-copy interactive analytics (public preview), an interactive warehouse can query standard tables directly, in addition to interactive tables.
+- To modify data, update the base (source) table and either fully replace the interactive table with a new version or use a dynamic-table-style incremental refresh (set `TARGET_LAG`).
 - You can't run `CALL` commands to call stored procedures through interactive warehouse
 
 <!-- ------------------------ -->
@@ -287,8 +266,6 @@ INTERACTIVE WAREHOUSE INTERACTIVE_DEMO_B successfully created.
 ### Create an interactive table
 
 ![](assets/create-interactive-table.png)
-
-> Note: With zero-copy interactive analytics (public preview), creating an interactive table is now optional — an interactive warehouse can query the standard `HITS2_CSV` table directly. We still create an interactive table here to demonstrate that path and to enable a head-to-head performance comparison later in this guide.
 
 Now, we'll use the standard `WH` warehouse to efficiently create our new interactive `CUSTOMERS` table by copying all the data from the original standard table:
 
