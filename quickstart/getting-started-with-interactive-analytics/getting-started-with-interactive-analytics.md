@@ -508,3 +508,4 @@ Data and Notebook:
 
 Documentation:
 - [Snowflake interactive tables and interactive warehouses](https://docs.snowflake.com/en/user-guide/interactive)
+- [Zero-copy interactive analytics: using standard and Iceberg tables (Public Preview)](https://docs.snowflake.com/en/user-guide/interactive#using-standard-and-iceberg-tables-public-preview)
