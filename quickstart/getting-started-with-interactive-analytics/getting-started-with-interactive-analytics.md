@@ -1,12 +1,12 @@
 author: Chanin Nantasenamat
 id: getting-started-with-interactive-analytics
-summary: This guide demonstrates how to set up and use Snowflake's Interactive Warehouses and Tables to achieve sub-second query performance. 
+summary: This guide demonstrates how to set up and use Snowflake's Interactive Analytics to achieve sub-second query performance.
 categories: snowflake-site:taxonomy/solution-center/certification/quickstart, snowflake-site:taxonomy/product/analytics, snowflake-site:taxonomy/snowflake-feature/interactive-tables, snowflake-site:taxonomy/snowflake-feature/interactive-warehouse
 language: en
 environments: web
 status: Published
 
-# Getting Started with Snowflake Interactive Tables
+# Getting Started with Snowflake Interactive Analytics
 
 ## Overview
 
