@@ -52,11 +52,29 @@ Interactive tables have different methods for data ingestion and support a more 
 
 ### Zero-Copy Interactive Analytics
 
+> Note: Querying standard tables, Iceberg tables, and dynamic tables through an interactive warehouse is currently in Public Preview.
+
 If you are already using interactive tables with an interactive warehouse, zero-copy interactive analytics extends that setup to other table types without requiring any conversion. An interactive warehouse can query the following table types directly:
 
 - **Standard tables.** Your existing Snowflake tables are queryable with no `CREATE INTERACTIVE TABLE` step.
 - **Iceberg tables.** Open-format Iceberg data served at interactive latency.
 - **Dynamic tables.** Incrementally refreshed results that an interactive warehouse can query directly.
+
+The setup is straightforward. Create an interactive warehouse, optionally attach your highest-priority tables for proactive cache warming, then query any standard table directly:
+
+```sql
+-- 1. Create an interactive warehouse
+CREATE OR REPLACE INTERACTIVE WAREHOUSE analytics_iwh
+  WAREHOUSE_SIZE = 'XSMALL';
+
+-- 2. (Optional) Attach high-priority tables for proactive caching
+ALTER WAREHOUSE analytics_iwh
+  ADD TABLES (your_db.your_schema.critical_table_1, your_db.your_schema.critical_table_2);
+
+-- 3. Query any standard table, no conversion needed
+USE WAREHOUSE analytics_iwh;
+SELECT * FROM your_db.your_schema.any_standard_table WHERE ...;
+```
 
 With this expansion, `ADD TABLES` shifts from a prerequisite to a performance optimization: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed.
 
