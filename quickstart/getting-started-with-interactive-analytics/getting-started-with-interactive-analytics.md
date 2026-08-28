@@ -24,6 +24,7 @@ Here's how interactive warehouses and tables fits in for a typical data analytic
 - The process of creating an Interactive Table from an existing standard table.
 - How to attach a table to an Interactive Warehouse to pre-warm the data cache for faster queries.
 - A methodology for benchmarking and comparing the query latency of an interactive setup versus a standard warehouse.
+- How zero-copy interactive analytics extends an interactive warehouse to query standard tables, Iceberg tables, and dynamic tables directly, with no conversion required.
 
 ### What You'll Build
 
@@ -44,10 +45,22 @@ Think of them as a high-performance pair. Interactive tables are structured for 
 ![](assets/interactive-tables-and-warehouses.png)
 
 ### Interactive Warehouses
-An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables.
+An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables natively. With zero-copy interactive analytics, they can also query standard tables, Iceberg tables, and dynamic tables directly, with no conversion required.
 
 ### Interactive Tables
 Interactive tables have different methods for data ingestion and support a more limited set of SQL statements and query operators than standard Snowflake tables.
+
+### Zero-Copy Interactive Analytics
+
+If you are already using interactive tables with an interactive warehouse, zero-copy interactive analytics extends that setup to other table types without requiring any conversion. An interactive warehouse can query the following table types directly:
+
+- **Standard tables** -- your existing Snowflake tables are queryable with no `CREATE INTERACTIVE TABLE` step.
+- **Iceberg tables** -- open-format Iceberg data served at interactive latency.
+- **Dynamic tables** -- incrementally refreshed results that an interactive warehouse can query directly.
+
+With this expansion, `ADD TABLES` shifts from a prerequisite to a performance optimization: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed.
+
+> Note: This guide's hands-on demo follows the classic pattern -- create an interactive table, then query it on an interactive warehouse -- which delivers the strictest tail-latency guarantees. Zero-copy querying of standard, Iceberg, and dynamic tables is the natural complement once that foundation is in place.
 
 ### Use cases
 Interactive warehouses and interactive tables are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse. Instead, they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, this pairing is a strong fit.
@@ -162,7 +175,7 @@ This essentially retrieves data from the `MY_DEMO_DB` database, `BENCHMARK_FDN` 
 <!-- ------------------------ -->
 ## Performance Demo of Snowflake's Interactive Warehouses/Tables
 
-To proceed with carrying out this performance comparison of interactive warehouses/tables with standard ones, you can download notebook file [Getting_Started_with_Interactive_Tables.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Tables/Getting_Started_with_Interactive_Tables.ipynb) provided in the repo.
+To proceed with carrying out this performance comparison of interactive warehouses/tables with standard ones, you can download notebook file [Getting_Started_with_Interactive_Analytics.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb) provided in the repo.
 
 ### Load libraries and define custom functions
 
@@ -472,8 +485,8 @@ In this guide, we explored how to address the challenge of low-latency, near rea
 ### Related Resources
 
 Data and Notebook:
-- [synthetic_hits_data.csv](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Tables/synthetic_hits_data.csv)
-- [Getting_Started_with_Interactive_Tables.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Tables/Getting_Started_with_Interactive_Tables.ipynb)
+- [synthetic_hits_data.csv](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/synthetic_hits_data.csv)
+- [Getting_Started_with_Interactive_Analytics.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb)
 
 Documentation:
 - [Snowflake interactive tables and interactive warehouses](https://docs.snowflake.com/en/user-guide/interactive)
