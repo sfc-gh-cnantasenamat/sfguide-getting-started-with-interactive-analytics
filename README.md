@@ -1,4 +1,4 @@
-# Getting Started with Snowflake Interactive Tables
+# Getting Started with Snowflake Interactive Analytics
 
-- **Quickstart:** [`quickstart/getting-started-with-interactive-tables`](quickstart/getting-started-with-interactive-tables/getting-started-with-interactive-tables.md)
-- **Notebook:** [`notebook/Interactive_Tables`](notebook/Interactive_Tables/Getting_Started_with_Interactive_Tables.ipynb)
+- **Quickstart:** [`quickstart/getting-started-with-interactive-analytics`](quickstart/getting-started-with-interactive-analytics/getting-started-with-interactive-analytics.md)
+- **Notebook:** [`notebook/Interactive_Analytics`](notebook/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb)
