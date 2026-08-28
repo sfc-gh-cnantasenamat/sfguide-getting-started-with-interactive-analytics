@@ -54,13 +54,13 @@ Interactive tables have different methods for data ingestion and support a more 
 
 If you are already using interactive tables with an interactive warehouse, zero-copy interactive analytics extends that setup to other table types without requiring any conversion. An interactive warehouse can query the following table types directly:
 
-- **Standard tables** -- your existing Snowflake tables are queryable with no `CREATE INTERACTIVE TABLE` step.
-- **Iceberg tables** -- open-format Iceberg data served at interactive latency.
-- **Dynamic tables** -- incrementally refreshed results that an interactive warehouse can query directly.
+- **Standard tables.** Your existing Snowflake tables are queryable with no `CREATE INTERACTIVE TABLE` step.
+- **Iceberg tables.** Open-format Iceberg data served at interactive latency.
+- **Dynamic tables.** Incrementally refreshed results that an interactive warehouse can query directly.
 
 With this expansion, `ADD TABLES` shifts from a prerequisite to a performance optimization: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed.
 
-> Note: This guide's hands-on demo follows the classic pattern -- create an interactive table, then query it on an interactive warehouse -- which delivers the strictest tail-latency guarantees. Zero-copy means the same interactive warehouse can also query your standard, Iceberg, and dynamic tables directly.
+> Note: This guide's hands-on demo follows the classic pattern of creating an interactive table and querying it on an interactive warehouse, which delivers the strictest tail-latency guarantees. Zero-copy means the same interactive warehouse can also query your standard, Iceberg, and dynamic tables directly.
 
 ### Use cases
 Interactive warehouses and interactive tables are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse. Instead, they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, this pairing is a strong fit.
