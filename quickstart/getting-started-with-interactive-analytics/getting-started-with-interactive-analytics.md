@@ -109,7 +109,7 @@ Here are some limitations of interactive warehouses and interactive tables:
 
 ### Data operations
 
-> Note: The companion notebook creates all of these objects automatically using the `{{DB_NAME}}` and `{{STANDARD_WH_NAME}}` variables defined in the "Set common variables" cell (e.g. `CNANTASENAMAT_MY_DEMO_DB` and `CNANTASENAMAT_STD_WH`). The steps below show the equivalent manual SQL. If running outside the notebook, replace `{{DB_NAME}}` and `{{STANDARD_WH_NAME}}` with the matching user-prefixed names.
+> Note: The companion notebook creates all of these objects automatically using the `{{DB_NAME}}` and `{{STANDARD_WH_NAME}}` variables defined in the "Set common variables" cell. The steps below show the equivalent manual SQL. If running outside the notebook, replace `{{DB_NAME}}` and `{{STANDARD_WH_NAME}}` with your own names (e.g. `JSMITH_MY_DEMO_DB` and `JSMITH_STD_WH`).
 
 #### Optional: Create warehouse
 
