@@ -109,23 +109,25 @@ Here are some limitations of interactive warehouses and interactive tables:
 
 ### Data operations
 
+> Note: The companion notebook creates all of these objects automatically using the `{{DB_NAME}}` and `{{STANDARD_WH_NAME}}` variables defined in the "Set common variables" cell (e.g. `CNANTASENAMAT_MY_DEMO_DB` and `CNANTASENAMAT_STD_WH`). The steps below show the equivalent manual SQL. If running outside the notebook, replace `{{DB_NAME}}` and `{{STANDARD_WH_NAME}}` with the matching user-prefixed names.
+
 #### Optional: Create warehouse
 
 In order to create an interactive table and fill the table with data, you'll need to use a standard warehouse.
-You can use any existing warehouse or create a new one, here we'll create a new warehouse called `WH`:
+You can use any existing warehouse or create a new one, here we'll create a new warehouse called `{{STANDARD_WH_NAME}}`:
 
 ```sql
-CREATE OR REPLACE WAREHOUSE WH WITH WAREHOUSE_SIZE='X-SMALL';
+CREATE OR REPLACE WAREHOUSE {{STANDARD_WH_NAME}} WITH WAREHOUSE_SIZE='X-SMALL';
 ```
 
 #### Step 1: Create a Database and Schema
 
-First, we'll start by creating a database called `MY_DEMO_DB` and `BENCHMARK_FDN` and `BENCHMARK_INTERACTIVE` as schemas:
+First, we'll start by creating a database called `{{DB_NAME}}` and `BENCHMARK_FDN` and `BENCHMARK_INTERACTIVE` as schemas:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS MY_DEMO_DB;
-CREATE SCHEMA IF NOT EXISTS MY_DEMO_DB.BENCHMARK_FDN;
-CREATE SCHEMA IF NOT EXISTS MY_DEMO_DB.BENCHMARK_INTERACTIVE;
+CREATE DATABASE IF NOT EXISTS {{DB_NAME}};
+CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_FDN;
+CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_INTERACTIVE;
 ```
 
 #### Step 2: Create a new stage
@@ -133,7 +135,7 @@ Next, we'll create a stage called `my_csv_stage` where the CSV file will soon be
 
 ```sql
 -- Define database and schema to use
-USE SCHEMA MY_DEMO_DB.BENCHMARK_FDN;
+USE SCHEMA {{DB_NAME}}.BENCHMARK_FDN;
 
 -- Create a stage that includes the definition for the CSV file format
 CREATE OR REPLACE STAGE my_csv_stage
@@ -146,7 +148,7 @@ CREATE OR REPLACE STAGE my_csv_stage
 
 #### Step 3: Upload CSV to a stage
 
-1. In the Snowflake UI, navigate to the database/schema that you've created (`MY_DEMO_DB.BENCHMARK_FDN`).
+1. In the Snowflake UI, navigate to the database/schema that you've created (`{{DB_NAME}}.BENCHMARK_FDN`).
 2. Go to the `my_csv_stage` stage
 3. Upload the [`synthetic_hits_data.csv`](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/synthetic_hits_data.csv) file to this stage.
 
@@ -156,7 +158,7 @@ Now that we have the CSV file in the stage, we'll need to create the `HITS2_CSV`
 
 ```sql
 -- Use your database and schema
-USE SCHEMA MY_DEMO_DB.BENCHMARK_FDN;
+USE SCHEMA {{DB_NAME}}.BENCHMARK_FDN;
 
 -- Create the table with the correct data types
 CREATE OR REPLACE TABLE HITS2_CSV (
@@ -182,11 +184,11 @@ COPY INTO HITS2_CSV FROM @my_csv_stage/synthetic_hits_data.csv
 Finally, we'll now retrieve contents from the table by performing a simple query with the `SELECT` statement:
 
 ```sql
-USE WAREHOUSE WH;
-SELECT * FROM MY_DEMO_DB.BENCHMARK_FDN.HITS2_CSV;
+USE WAREHOUSE {{STANDARD_WH_NAME}};
+SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV;
 ```
 
-This essentially retrieves data from the `MY_DEMO_DB` database, `BENCHMARK_FDN` schema and `HITS2_CSV` table:
+This essentially retrieves data from the `{{DB_NAME}}` database, `BENCHMARK_FDN` schema and `HITS2_CSV` table:
 
 ![](assets/MY_DEMO_DB.BENCHMARK_FDN.HITS2_CSV.png)
 
