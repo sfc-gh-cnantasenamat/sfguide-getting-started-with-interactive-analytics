@@ -249,6 +249,12 @@ CREATE OR REPLACE INTERACTIVE WAREHOUSE {{INTERACTIVE_WH_NAME}}
 
 ### Data setup and loading
 
+Before loading data, ensure the standard warehouse is active:
+
+```sql
+USE WAREHOUSE {{STANDARD_WH_NAME}};
+```
+
 The following Python cell creates the `HITS2_CSV` table and loads it from the `synthetic_hits_data.csv` file bundled with the notebook. The load is idempotent: it checks whether the table already contains rows and, if so, skips the load on subsequent runs.
 
 > Note: The data is loaded from the bundled CSV using `pandas` and `write_pandas` with no external network access required. Make sure `synthetic_hits_data.csv` is added to the notebook's files.
@@ -586,6 +592,7 @@ In this guide, we explored how to address the challenge of low-latency, near rea
 - How to create, configure, and attach interactive warehouses and tables using SQL to prepare a high-performance analytics environment.
 - How to run a sequential benchmark and visualize per-run latency and mean latency with standard deviation to prove interactive performance gains.
 - How to simulate real-world concurrent dashboard load and measure p50, p90, p99 latency and throughput across multiple concurrency levels.
+- How zero-copy interactive analytics lets an interactive warehouse query standard, Iceberg, and dynamic tables directly, with no `CREATE INTERACTIVE TABLE` conversion required.
 
 ### Related Resources
 
