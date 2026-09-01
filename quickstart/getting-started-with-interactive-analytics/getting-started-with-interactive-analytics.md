@@ -193,7 +193,7 @@ This essentially retrieves data from the `{{DB_NAME}}` database, `BENCHMARK_FDN`
 ![](assets/MY_DEMO_DB.BENCHMARK_FDN.HITS2_CSV.png)
 
 <!-- ------------------------ -->
-## Performance Demo of Snowflake's Interactive Warehouses/Tables
+## Performance demo of Snowflake's Interactive Warehouses/Tables
 
 To proceed with carrying out this performance comparison of interactive warehouses/tables with standard ones, you can download notebook file [Getting_Started_with_Interactive_Analytics.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb) provided in the repo.
 
@@ -639,8 +639,8 @@ print(f"\nBenchmark complete ({run_concurrent_benchmark.__defaults__[0]} rounds 
 
 The results are visualized in two side-by-side charts:
 
-- **Concurrency vs Latency** — shows how p50, p90, and p99 change as concurrent workers increase. A flat line means the warehouse handles more load without slowing down.
-- **Concurrency vs Throughput** — shows queries per second at each concurrency level. Higher is better; a plateau indicates the warehouse is saturated.
+- **Concurrency vs Latency.** Shows how p50, p90, and p99 change as concurrent workers increase. A flat line means the warehouse handles more load without slowing down.
+- **Concurrency vs Throughput.** Shows queries per second at each concurrency level. Higher is better; a plateau indicates the warehouse is saturated.
 
 ```python
 import matplotlib.pyplot as plt
@@ -682,7 +682,7 @@ plt.show()
 
 A final cell dynamically generates a written interpretation of the results, comparing the two warehouses across every concurrency level and surfacing scaling issues, tail latency spikes, throughput plateaus, and actionable suggestions when the interactive warehouse underperforms.
 
-## Conclusion And Resources
+## Conclusion and resources
 
 In this guide, we explored how to address the challenge of low-latency, near real-time analytics using Snowflake's interactive warehouses and tables. We walked through the complete setup process, from creating the necessary database objects and loading data to configuring and attaching an interactive table to an interactive warehouse. The sequential and concurrent performance benchmarks clearly demonstrated the substantial latency improvements these specialized features provide over standard configurations, across both individual query runs and high-concurrency workloads. This confirms their value as a powerful solution for demanding use cases like live dashboards and high-throughput data APIs, where sub-second performance is critical.
 
