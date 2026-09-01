@@ -380,9 +380,12 @@ Before running the timed query, we define a helper function for visualization:
 import matplotlib.pyplot as plt
 
 def plot_data(data, title, time_taken, color='#29B5E8'):
+    # Separate titles and counts
     titles = [item[0] for item in data]
     counts = [item[1] for item in data]
 
+    # Plot bar chart
+    
     plt.figure(figsize=(12, 4))
     plt.bar(titles, counts, color=color)
     plt.xticks(rotation=45, ha='right')
@@ -393,6 +396,7 @@ def plot_data(data, title, time_taken, color='#29B5E8'):
          ha='center', va='top',
          transform=plt.gca().transAxes,
          fontdict={'size': 16})
+    #plt.tight_layout()
     plt.show()
 ```
 
@@ -518,8 +522,8 @@ The first chart plots per-run latency side-by-side:
 ```python
 titles = [(i+1) for i in range(0, len(counts_iw))]
 
-x = np.arange(len(titles))
-width = 0.35
+x = np.arange(len(titles))  # the label locations
+width = 0.35  # bar width
 
 fig, ax = plt.subplots(figsize=(15, 5))
 ax.bar(x - width/2, counts_std, width, label="Standard", color="#5B5B5B")
@@ -543,15 +547,16 @@ plt.show()
 The second chart compares mean latency with standard deviation error bars:
 
 ```python
+# Calculate means and standard deviations for error bars
 mean_std = np.mean(counts_std)
 mean_iw = np.mean(counts_iw)
 std_std = np.std(counts_std)
 std_iw = np.std(counts_iw)
 
 fig, ax = plt.subplots(figsize=(6, 5))
-ax.bar(["Standard", "Interactive"], [mean_std, mean_iw],
-       yerr=[std_std, std_iw], capsize=8,
-       color=["#5B5B5B", "#29B5E8"], width=0.5)
+bars = ax.bar(["Standard", "Interactive"], [mean_std, mean_iw],
+              yerr=[std_std, std_iw], capsize=8,
+              color=["#5B5B5B", "#29B5E8"], width=0.5)
 
 ax.set_ylabel("Latency (seconds)")
 ax.set_title("Standard vs Interactive warehouse\n(mean over {} runs with std dev)".format(len(counts_std)))
