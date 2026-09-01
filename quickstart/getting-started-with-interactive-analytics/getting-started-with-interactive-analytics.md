@@ -542,7 +542,7 @@ ax.legend(
 plt.show()
 ```
 
-![](assets/sequential-benchmark-std-vs-int-wh-50runs.png)
+![](assets/sequential-benchmark-std-vs-int-wh.png)
 
 The second chart compares mean latency with standard deviation error bars:
 
@@ -564,7 +564,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![](assets/sequential-benchmark-std-vs-int-wh.png)
+![](assets/sequential-benchmark-std-vs-int-wh-50runs.png)
 
 ### Concurrent Query Benchmark
 
