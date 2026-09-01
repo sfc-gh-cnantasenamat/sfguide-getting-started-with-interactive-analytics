@@ -190,7 +190,7 @@ SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV;
 
 This essentially retrieves data from the `{{DB_NAME}}` database, `BENCHMARK_FDN` schema and `HITS2_CSV` table:
 
-![](assets/MY_DEMO_DB.BENCHMARK_FDN.HITS2_CSV.png)
+![](assets/hits2csv-data.png)
 
 <!-- ------------------------ -->
 ## Performance demo of Snowflake's Interactive Warehouses/Tables
@@ -305,7 +305,7 @@ SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV;
 
 This essentially retrieves data from the database, `BENCHMARK_FDN` schema and `HITS2_CSV` table:
 
-![](assets/MY_DEMO_DB.BENCHMARK_FDN.HITS2_CSV.png)
+![](assets/hits2csv-data.png)
 
 ### Create an interactive table
 
@@ -372,7 +372,7 @@ USE DATABASE {{DB_NAME}};
 ALTER SESSION SET USE_CACHED_RESULT = FALSE;
 ```
 
-![](assets/py_iw_run.png)
+![](assets/py-iw-run.png)
 
 Before running the timed query, we define a helper function for visualization:
 
@@ -433,7 +433,7 @@ plot_data(result, "Page visit analysis (Interactive)", time_taken)
 
 This gives the following plot:
 
-![](assets/iw_run_exec.png)
+![](assets/iw-run-exec.png)
 
 ### Compare to a standard warehouse
 
@@ -449,7 +449,7 @@ USE DATABASE {{DB_NAME}};
 ALTER SESSION SET USE_CACHED_RESULT = FALSE;
 ```
 
-![](assets/py_std_run.png)
+![](assets/py-std-run.png)
 
 Here, in a Python cell we'll run a top 10 page views analysis by executing the query, measuring its performance, and immediately plotting the results and execution time:
 
@@ -478,7 +478,7 @@ time_taken = end_time - start_time
 plot_data(result, "Page visit analysis (Standard)", time_taken, '#5B5B5B')
 ```
 
-![](assets/py_std_iw_run_exec.png)
+![](assets/py-std-iw-run-exec.png)
 
 ### Sequential Query Benchmark
 
