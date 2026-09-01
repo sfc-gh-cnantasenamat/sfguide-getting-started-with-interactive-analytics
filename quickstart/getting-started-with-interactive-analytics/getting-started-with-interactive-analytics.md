@@ -542,7 +542,7 @@ ax.legend(
 plt.show()
 ```
 
-![](assets/py_run_queries.png)
+![](assets/sequential-benchmark-std-vs-int-wh-50runs.png)
 
 The second chart compares mean latency with standard deviation error bars:
 
@@ -563,6 +563,8 @@ ax.set_title("Standard vs Interactive warehouse\n(mean over {} runs with std dev
 plt.tight_layout()
 plt.show()
 ```
+
+![](assets/sequential-benchmark-std-vs-int-wh.png)
 
 ### Concurrent Query Benchmark
 
@@ -675,7 +677,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![](assets/concurrent_benchmark.png)
+![](assets/concurrency-benchmark.png)
 
 A final cell dynamically generates a written interpretation of the results, comparing the two warehouses across every concurrency level and surfacing scaling issues, tail latency spikes, throughput plateaus, and actionable suggestions when the interactive warehouse underperforms.
 
