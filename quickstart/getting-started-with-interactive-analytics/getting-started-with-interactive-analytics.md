@@ -639,6 +639,44 @@ The results are visualized in two side-by-side charts:
 - **Concurrency vs Latency** — shows how p50, p90, and p99 change as concurrent workers increase. A flat line means the warehouse handles more load without slowing down.
 - **Concurrency vs Throughput** — shows queries per second at each concurrency level. Higher is better; a plateau indicates the warehouse is saturated.
 
+```python
+import matplotlib.pyplot as plt
+
+benchmark_rounds = run_concurrent_benchmark.__defaults__[0]
+levels = [r["concurrency"] for r in results_iw]
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+for results, label, color in [(results_std, "Standard", "#5B5B5B"), (results_iw, "Interactive", "#29B5E8")]:
+    for metric, marker, ls, alpha in [("p50", "o", "-", 1.0), ("p90", "s", "--", 0.6), ("p99", "^", ":", 0.4)]:
+        ax1.errorbar(levels, [r[f"{metric}_mean"] for r in results],
+                     yerr=[r[f"{metric}_std"] for r in results],
+                     fmt=f"{marker}{ls}", color=color, alpha=alpha, capsize=4, label=f"{label} {metric}")
+
+ax1.set(xlabel="Concurrent Workers", ylabel="Latency (seconds)", xticks=levels)
+ax1.set_ylim(bottom=0)
+ax1.set_title(f"Concurrency vs Latency (lower is better)\nmean ± std over {benchmark_rounds} rounds")
+ax1.legend(fontsize=7, ncol=2)
+ax1.grid(True, alpha=0.3)
+
+x = np.arange(len(levels))
+w = 0.35
+for results, label, color, offset in [(results_std, "Standard", "#5B5B5B", -w/2), (results_iw, "Interactive", "#29B5E8", w/2)]:
+    ax2.bar(x + offset, [r["throughput_qps_mean"] for r in results], w,
+            yerr=[r["throughput_qps_std"] for r in results], capsize=4, label=label, color=color)
+
+ax2.set(xlabel="Concurrent Workers", ylabel="Queries / Second", xticks=x)
+ax2.set_xticklabels(levels)
+ax2.set_title(f"Concurrency vs Throughput (higher is better)\nmean ± std over {benchmark_rounds} rounds")
+ax2.legend()
+ax2.grid(True, alpha=0.3, axis="y")
+
+plt.tight_layout()
+plt.show()
+```
+
+![](assets/concurrent_benchmark.png)
+
 A final cell dynamically generates a written interpretation of the results, comparing the two warehouses across every concurrency level and surfacing scaling issues, tail latency spikes, throughput plateaus, and actionable suggestions when the interactive warehouse underperforms.
 
 ## Conclusion And Resources
