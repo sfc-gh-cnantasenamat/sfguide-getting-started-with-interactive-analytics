@@ -682,7 +682,7 @@ plt.show()
 
 A final cell dynamically generates a written interpretation of the results, comparing the two warehouses across every concurrency level and surfacing scaling issues, tail latency spikes, throughput plateaus, and actionable suggestions when the interactive warehouse underperforms.
 
-## Conclusion and resources
+## Conclusion and Resources
 
 In this guide, we explored how to address the challenge of low-latency, near real-time analytics using Snowflake's interactive warehouses and tables. We walked through the complete setup process, from creating the necessary database objects and loading data to configuring and attaching an interactive table to an interactive warehouse. The sequential and concurrent performance benchmarks clearly demonstrated the substantial latency improvements these specialized features provide over standard configurations, across both individual query runs and high-concurrency workloads. This confirms their value as a powerful solution for demanding use cases like live dashboards and high-throughput data APIs, where sub-second performance is critical.
 
