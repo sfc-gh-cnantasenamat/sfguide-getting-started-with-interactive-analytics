@@ -508,7 +508,7 @@ def run_and_measure(count, mode):
         t0 = time.time()
         cursor.execute(query).fetchall()
         timings.append(time.time() - t0)
-    return timings[1:]  # skip warm-up run
+    return timings[1:] # skip warm-up run
 
 counts_iw = run_and_measure(runs, "iw")
 print(counts_iw)
@@ -581,6 +581,57 @@ QUERY_TEMPLATES = {
         AVG(ResolutionWidth), SUM(CASE WHEN SearchPhrase <> '' THEN 1 ELSE 0 END)
         FROM {table} GROUP BY EventDate ORDER BY EventDate""",
 }
+
+def build_query_pool(table):
+    return [(k, v.format(table=table)) for k, v in QUERY_TEMPLATES.items()]
+
+def worker(conn, wh_name, query_pool, n_queries=6, arrival_rate=5):
+    cur = conn.cursor()
+    cur.execute(f"USE WAREHOUSE {wh_name}")
+    cur.execute("ALTER SESSION SET USE_CACHED_RESULT = FALSE")
+    latencies = []
+    for _ in range(n_queries):
+        time.sleep(random.expovariate(arrival_rate))
+        _, query = random.choice(query_pool)
+        cur.execute(query).fetchall()
+        qid = cur.sfqid
+        ms = cur.execute(f"SELECT TOTAL_ELAPSED_TIME FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION()) WHERE QUERY_ID = '{qid}'").fetchone()[0]
+        latencies.append(ms / 1000.0)
+    cur.close()
+    return latencies
+
+def run_concurrent_benchmark(conn, wh_name, table, concurrency_levels, rounds=10):
+    query_pool = build_query_pool(table)
+    all_results = []
+    for n in concurrency_levels:
+        print(f"  concurrency={n} ({rounds} rounds) ...", end=" ", flush=True)
+        round_stats = []
+        for _ in range(rounds):
+            t0 = time.time()
+            with ThreadPoolExecutor(max_workers=n) as pool:
+                futures = [pool.submit(worker, conn, wh_name, query_pool) for _ in range(n)]
+                lats = [l for f in as_completed(futures) for l in f.result()]
+            wall = time.time() - t0
+            round_stats.append({"p50": np.percentile(lats, 50), "p90": np.percentile(lats, 90),
+                                "p99": np.percentile(lats, 99), "throughput_qps": len(lats) / wall})
+        result = {"concurrency": n}
+        for m in ["p50", "p90", "p99", "throughput_qps"]:
+            vals = [r[m] for r in round_stats]
+            result[f"{m}_mean"], result[f"{m}_std"] = np.mean(vals), np.std(vals)
+        all_results.append(result)
+        print(f"p50={result['p50_mean']:.3f}s(±{result['p50_std']:.3f})  p90={result['p90_mean']:.3f}s(±{result['p90_std']:.3f})  qps={result['throughput_qps_mean']:.1f}(±{result['throughput_qps_std']:.1f})")
+    return all_results
+
+concurrency_levels = [1, 2, 4, 8]
+conn = session.connection
+
+print("Interactive warehouse:")
+results_iw = run_concurrent_benchmark(conn, INTERACTIVE_WH_NAME, "BENCHMARK_INTERACTIVE.CUSTOMERS", concurrency_levels)
+
+print("\nStandard warehouse:")
+results_std = run_concurrent_benchmark(conn, STANDARD_WH_NAME, "BENCHMARK_FDN.HITS2_CSV", concurrency_levels)
+
+print(f"\nBenchmark complete ({run_concurrent_benchmark.__defaults__[0]} rounds per level).")
 ```
 
 The results are visualized in two side-by-side charts:
