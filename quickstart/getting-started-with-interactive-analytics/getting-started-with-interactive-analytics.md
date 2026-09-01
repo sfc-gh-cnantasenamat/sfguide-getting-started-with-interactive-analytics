@@ -486,7 +486,6 @@ To directly compare performance, we'll benchmark both the interactive and standa
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
 runs = 50
 
@@ -520,6 +519,7 @@ print(counts_std)
 The first chart plots per-run latency side-by-side:
 
 ```python
+import matplotlib.pyplot as plt
 titles = [(i+1) for i in range(0, len(counts_iw))]
 
 x = np.arange(len(titles))  # the label locations
