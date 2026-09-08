@@ -12,23 +12,22 @@ status: Published
 
 When it comes to near real-time (or sub-second) analytics, the ideal scenario involves achieving consistent, rapid query performance and managing costs effectively, even with large datasets and high user demand. 
 
-Snowflake's new Interactive Warehouses and Tables are designed to deliver on these needs. They provide high-concurrency, low-latency serving layer for near real-time analytics. This allows consistent, sub-second query performance for live dashboards and APIs with great price-for-performance. With this end-to-end solution, you can avoid operational complexities and tool sprawl.
+Snowflake's new Interactive Warehouses are designed to deliver on these needs. They provide a high-concurrency, low-latency serving layer for near real-time analytics, and can query your existing standard tables directly through zero-copy interactive analytics, with no data conversion required. This allows consistent, sub-second query performance for live dashboards and APIs with great price-for-performance. With this end-to-end solution, you can avoid operational complexities and tool sprawl.
 
-Here's how interactive warehouses and tables fits in for a typical data analytics pipeline:
+Here's how an interactive warehouse fits into a typical data analytics pipeline:
 
 ![](assets/architecture.png)
 
 ### What You'll Learn
-- The core concepts behind Snowflake's Interactive Warehouses and Tables and how they provide low-latency analytics.
+- The core concepts behind Snowflake's Interactive Warehouses and how they provide low-latency analytics.
 - How to create and configure an Interactive Warehouse using SQL.
-- The process of creating an Interactive Table from an existing standard table.
+- How zero-copy interactive analytics lets an interactive warehouse query your standard tables directly, with no data conversion required.
 - How to attach a table to an Interactive Warehouse to pre-warm the data cache for faster queries.
-- A methodology for benchmarking and comparing the query latency of an interactive setup versus a standard warehouse.
-- How zero-copy interactive analytics extends an interactive warehouse to query standard tables, Iceberg tables, and dynamic tables directly, with no conversion required.
+- A methodology for benchmarking and comparing the query latency and throughput of an interactive warehouse versus a standard warehouse.
 
 ### What You'll Build
 
-You will build a complete, functioning interactive data environment in Snowflake, including a dedicated Interactive Warehouse and an Interactive Table populated with data. You will also create a Python-based performance test that executes queries against both your new interactive setup and a standard configuration, culminating in a comparative bar chart that visually proves the latency improvements.
+You will build a complete, functioning interactive analytics environment in Snowflake, including a dedicated Interactive Warehouse configured to query your data directly. You will also create a Python-based performance test that executes queries against both your interactive warehouse and a standard warehouse, culminating in benchmark charts that visually demonstrate the latency and throughput improvements.
 
 ### Prerequisites
 - Access to a [Snowflake account](https://signup.snowflake.com/?utm_source=snowflake-devrel&utm_medium=developer-guides&utm_cta=developer-guides)
@@ -36,25 +35,16 @@ You will build a complete, functioning interactive data environment in Snowflake
 - Familiarity with data warehousing and performance concepts.
 - A Snowflake role with privileges to create warehouses and tables (*i.e.*, `ACCOUNTADMIN` is used in the notebook).
 
-## Understand Interactive Warehouses and Interactive Tables
+## Understand Interactive Warehouses
 
-To boost query performance for interactive, sub-second analytics, Snowflake introduces two new, specialized objects that work together: interactive warehouses and interactive tables.
-
-Think of them as a high-performance pair. Interactive tables are structured for extremely fast data retrieval, and interactive warehouses are the specialized engines required to query them. Using them in tandem is the key to achieving the best possible query performance and lowest latency.
-
-![](assets/interactive-tables-and-warehouses.png)
+To boost query performance for interactive, sub-second analytics, Snowflake introduces the interactive warehouse: a specialized compute engine tuned for low-latency, high-concurrency workloads.
 
 ### Interactive Warehouses
-An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Interactive warehouses can query interactive tables natively. With zero-copy interactive analytics, they can also query standard tables, Iceberg tables, and dynamic tables directly, with no conversion required.
+An interactive warehouse tunes the Snowflake engine specially for low-latency, interactive workloads. This type of warehouse is optimized to run continuously, serving high volumes of concurrent queries. All interactive warehouses run on the latest generation of hardware. Through zero-copy interactive analytics, an interactive warehouse can query your standard tables, Iceberg tables, and dynamic tables directly, with no conversion required.
 
-### Interactive Tables
-Interactive tables have different methods for data ingestion and support a more limited set of SQL statements and query operators than standard Snowflake tables.
+### Zero-copy interactive analytics
 
-### Zero-Copy Interactive Analytics
-
-> Note: Querying standard tables, Iceberg tables, and dynamic tables through an interactive warehouse is currently in Public Preview.
-
-If you are already using interactive tables with an interactive warehouse, zero-copy interactive analytics extends that setup to other table types without requiring any conversion. An interactive warehouse can query the following table types directly:
+An interactive warehouse can query the following table types directly:
 
 - **Standard tables.** Your existing Snowflake tables are queryable with no `CREATE INTERACTIVE TABLE` step.
 - **Iceberg tables.** Open-format Iceberg data served at interactive latency.
@@ -76,32 +66,37 @@ USE WAREHOUSE analytics_iwh;
 SELECT * FROM your_db.your_schema.any_standard_table WHERE ...;
 ```
 
-With this expansion, `ADD TABLES` shifts from a prerequisite to a performance optimization: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed.
+With this pattern, `ADD TABLES` is a performance optimization, not a requirement: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed. The hands-on demo below follows this exact pattern, querying a standard table directly on an interactive warehouse.
 
-> Note: This guide's hands-on demo follows the classic pattern of creating an interactive table and querying it on an interactive warehouse, which delivers the strictest tail-latency guarantees. Zero-copy means the same interactive warehouse can also query your standard, Iceberg, and dynamic tables directly.
+### Interactive tables
+
+Before zero-copy interactive analytics, the only way to query data at interactive latency was to convert it into an interactive table, a specialized table type with different data ingestion methods and a more limited set of supported SQL statements and query operators than standard tables.
+
+![](assets/interactive-tables-and-warehouses.png)
+
+Interactive tables still exist and remain supported, mainly for compatibility with earlier interactive analytics setups. For new work, Snowflake recommends querying your standard tables directly through zero-copy interactive analytics instead, as shown in the hands-on demo below.
 
 ### Use cases
-Interactive warehouses and interactive tables are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse. Instead, they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, this pairing is a strong fit.
+Interactive warehouses are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse. Instead, they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, an interactive warehouse is a strong fit.
 
 ![](assets/use-cases.png)
 
 Three domains capture where it matters most:
 
 - **AI & Agents.** Agentic and AI-driven applications fire off large volumes of small, concurrent queries, such as a retrieval step here or a metric lookup there, and each one needs to come back instantly and cheaply. Interactive warehouses make this practical for low-cost RAG retrieval, AI observability (monitoring model and agent behavior in near real time), and high-concurrency MCP servers that expose your data to many agents at once.
-- **Customer-Facing Data Apps.** When query latency is visible to your end users, consistency matters as much as raw speed. This pairing powers data APIs that serve predictable, sub-second responses to customer-facing applications, embedded analytics inside your product, and live dashboards that stay responsive even under heavy, simultaneous use.
-- **Operational Analytics.** Internal, decision-driving workloads depend on fresh data and fast answers. Interactive warehouses and tables suit trading and risk management, infrastructure observability and alerting (high-throughput monitoring where every second counts), and supply chain and inventory tracking that must reflect the latest state of the business.
+- **Customer-Facing Data Apps.** When query latency is visible to your end users, consistency matters as much as raw speed. Interactive warehouses power data APIs that serve predictable, sub-second responses to customer-facing applications, embedded analytics inside your product, and live dashboards that stay responsive even under heavy, simultaneous use.
+- **Operational Analytics.** Internal, decision-driving workloads depend on fresh data and fast answers. Interactive warehouses suit trading and risk management, infrastructure observability and alerting (high-throughput monitoring where every second counts), and supply chain and inventory tracking that must reflect the latest state of the business.
 
-What unites all of these is the same set of requirements, namely low latency, high concurrency, fresh data, and low cost per query, met by simple queries repeated at scale. That is exactly the workload interactive warehouses and tables were designed for.
+What unites all of these is the same set of requirements, namely low latency, high concurrency, fresh data, and low cost per query, met by simple queries repeated at scale. That is exactly the workload interactive warehouses were designed for.
 
 
 ### Limitations
 
-The queries that work best with interactive tables are usually `SELECT` statements with selective `WHERE` clauses, optionally including a `GROUP BY` clause on a few dimensions.
+The queries that work best with interactive warehouses are usually `SELECT` statements with selective `WHERE` clauses, optionally including a `GROUP BY` clause on a few dimensions.
 
-Here are some limitations of interactive warehouses and interactive tables:
+Here are some limitations of interactive warehouses:
 - An interactive warehouse is designed to stay up and running. It supports auto-suspend and auto-resume, but the minimum auto-suspend interval is 24 hours (86400 seconds), so it suspends only after 24 hours of inactivity. You can also suspend and resume it manually. Either way, expect significant query latency right after a resume, while the data cache warms up again.
-- Interactive warehouses cancel any query that runs longer than 5 seconds, since they're tuned for short, low-latency queries. To protect p99 latency, configure a fallback warehouse so those queries are transparently re-run on a standard warehouse (see the "Configure a fallback warehouse" section below). Interactive tables also don't support ETL or data manipulation language (DML) commands such as `UPDATE` and `DELETE`.
-- To modify data, update the base (source) table and either fully replace the interactive table with a new version or use a dynamic-table-style incremental refresh (set `TARGET_LAG`).
+- Interactive warehouses cancel any query that runs longer than 5 seconds, since they're tuned for short, low-latency queries. To protect p99 latency, configure a fallback warehouse so those queries are transparently re-run on a standard warehouse (see the "Configure a fallback warehouse" section below).
 - You can't run `CALL` commands to call stored procedures through interactive warehouse
 
 <!-- ------------------------ -->
@@ -113,7 +108,7 @@ Here are some limitations of interactive warehouses and interactive tables:
 
 #### Optional: Create warehouse
 
-In order to create an interactive table and fill the table with data, you'll need to use a standard warehouse.
+In order to load data into a standard table, you'll need to use a standard warehouse.
 You can use any existing warehouse or create a new one, here we'll create a new warehouse called `{{STANDARD_WH_NAME}}`:
 
 ```sql
@@ -122,12 +117,11 @@ CREATE OR REPLACE WAREHOUSE {{STANDARD_WH_NAME}} WITH WAREHOUSE_SIZE='X-SMALL';
 
 #### Step 1: Create a Database and Schema
 
-First, we'll start by creating a database called `{{DB_NAME}}` and `BENCHMARK_FDN` and `BENCHMARK_INTERACTIVE` as schemas:
+First, we'll start by creating a database called `{{DB_NAME}}` and `BENCHMARK_FDN` as a schema:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS {{DB_NAME}};
 CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_FDN;
-CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_INTERACTIVE;
 ```
 
 #### Step 2: Create a new stage
@@ -193,9 +187,9 @@ This essentially retrieves data from the `{{DB_NAME}}` database, `BENCHMARK_FDN`
 ![](assets/hits2csv-data.png)
 
 <!-- ------------------------ -->
-## Performance demo of Snowflake's Interactive Warehouses/Tables
+## Performance demo of Snowflake's Interactive Warehouses
 
-To proceed with carrying out this performance comparison of interactive warehouses/tables with standard ones, you can download notebook file [Getting_Started_with_Interactive_Analytics.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb) provided in the repo.
+To proceed with carrying out this performance comparison of an interactive warehouse against a standard one, you can download notebook file [Getting_Started_with_Interactive_Analytics.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb) provided in the repo.
 
 ### Set common variables
 
@@ -215,7 +209,7 @@ print(f"User: {USER}\nDatabase: {DB_NAME}\nInteractive WH: {INTERACTIVE_WH_NAME}
 
 ### Set up role, warehouse, and database
 
-Interactive Warehouses and Interactive Tables are now generally available (GA) and enabled by default on your account, so there's no need to check the Snowflake version or verify any account parameters.
+Interactive Warehouses are now generally available (GA) and enabled by default on your account, so there's no need to check the Snowflake version or verify any account parameters.
 
 The following SQL cell creates the standard warehouse, database, and schemas used throughout the notebook. All statements use `IF NOT EXISTS`, so this cell is safe to re-run:
 
@@ -227,7 +221,6 @@ CREATE WAREHOUSE IF NOT EXISTS {{STANDARD_WH_NAME}} WITH WAREHOUSE_SIZE = 'X-SMA
 CREATE DATABASE IF NOT EXISTS {{DB_NAME}};
 
 CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_FDN;
-CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_INTERACTIVE;
 
 USE WAREHOUSE {{STANDARD_WH_NAME}};
 USE DATABASE {{DB_NAME}};
@@ -296,6 +289,36 @@ else:
     print(f"Loaded {row_count:,} rows into {FQ}.")
 ```
 
+The bundled CSV has 100,000 rows, which is too small to show a clear concurrency advantage. The following Python cell scales the table up to roughly 2 million rows by replicating the loaded data 20 times with small jittered variations (a randomized `ClientIP` and `ResolutionWidth`, and a small `EventDate` offset), so each replicated batch looks like distinct traffic rather than exact duplicates. This step is also idempotent: it checks the row count first and skips the expansion if the table has already been scaled up.
+
+```python
+TARGET_MULTIPLIER = 20
+
+row_count = session.sql(f"SELECT COUNT(*) FROM {FQ}").collect()[0][0]
+if row_count >= TARGET_MULTIPLIER * 100_000 * 0.9:
+    print(f"{FQ} already has {row_count:,} rows. Skipping data expansion.")
+else:
+    print(f"Expanding {FQ} to roughly {TARGET_MULTIPLIER * 100_000:,} rows ...")
+    for _ in range(TARGET_MULTIPLIER - 1):
+        session.sql(f"""
+            INSERT INTO {FQ}
+            SELECT
+                DATEADD(day, UNIFORM(-3, 3, RANDOM()), EventDate),
+                CounterID,
+                CONCAT(TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.', TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.',
+                       TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.', TO_VARCHAR(UNIFORM(1, 255, RANDOM()))),
+                SearchEngineID,
+                SearchPhrase,
+                GREATEST(1, ResolutionWidth + UNIFORM(-100, 100, RANDOM())),
+                Title,
+                IsRefresh,
+                DontCountHits
+            FROM {FQ}
+        """).collect()
+    row_count = session.sql(f"SELECT COUNT(*) FROM {FQ}").collect()[0][0]
+    print(f"Expanded {FQ} to {row_count:,} rows.")
+```
+
 We can then verify the loaded data with a quick query:
 
 ```sql
@@ -307,32 +330,15 @@ This essentially retrieves data from the database, `BENCHMARK_FDN` schema and `H
 
 ![](assets/hits2csv-data.png)
 
-### Create an interactive table
-
-![](assets/create-interactive-table.png)
-
-Now, we'll use the standard warehouse to efficiently create our new interactive `CUSTOMERS` table by copying all the data from the original standard table:
-
-```sql
--- Use a standard warehouse to build the interactive table's data
-USE WAREHOUSE {{STANDARD_WH_NAME}};
-CREATE SCHEMA IF NOT EXISTS {{DB_NAME}}.BENCHMARK_INTERACTIVE;
-
-CREATE OR REPLACE INTERACTIVE TABLE
-  {{DB_NAME}}.BENCHMARK_INTERACTIVE.CUSTOMERS CLUSTER BY (ClientIP)
-AS
-  SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV;
-```
-
-### Attach interactive table to a warehouse
+### Attach a table to the interactive warehouse
 
 ![](assets/attach-interactive-table-to-warehouse.png)
 
-Next, we'll attach our interactive table to the warehouse, which pre-warms the data cache for optimal query performance:
+Next, we'll attach our standard table to the interactive warehouse, which pre-warms the data cache for optimal query performance:
 
 ```sql
 USE DATABASE {{DB_NAME}};
-ALTER WAREHOUSE {{INTERACTIVE_WH_NAME}} ADD TABLES(BENCHMARK_INTERACTIVE.CUSTOMERS);
+ALTER WAREHOUSE {{INTERACTIVE_WH_NAME}} ADD TABLES(BENCHMARK_FDN.HITS2_CSV);
 ```
 
 > Note: `ADD TABLES` is a performance optimization, not a requirement. It proactively warms the warehouse's data cache so queries avoid a cold start. Any table you don't attach is still queryable and gets cached on demand the first time it's accessed. Proactive warming is currently limited to 10 tables.
@@ -358,128 +364,6 @@ A few things to keep in mind about fallback warehouses:
 - When a retry occurs, the time spent on the interactive warehouse before the retry appears as `fault_handling_time` in the query profile.
 - To remove the fallback warehouse later, run `ALTER WAREHOUSE {{INTERACTIVE_WH_NAME}} UNSET FALLBACK_WAREHOUSE;`.
 
-### Run queries with interactive warehouse
-
-![](assets/run-queries-with-interactive-warehouse.png)
-
-Now, we'll run our first performance test on the interactive setup by executing a page-view query, timing its execution, and then plotting the results.
-
-We'll start by activating the interactive warehouse and disabling the result cache using a SQL cell:
-
-```sql
-USE WAREHOUSE {{INTERACTIVE_WH_NAME}};
-USE DATABASE {{DB_NAME}};
-ALTER SESSION SET USE_CACHED_RESULT = FALSE;
-```
-
-![](assets/py-iw-run.png)
-
-Before running the timed query, we define a helper function for visualization:
-
-```python
-import matplotlib.pyplot as plt
-
-def plot_data(data, title, time_taken, color='#29B5E8'):
-    # Separate titles and counts
-    titles = [item[0] for item in data]
-    counts = [item[1] for item in data]
-
-    # Plot bar chart
-    
-    plt.figure(figsize=(12, 4))
-    plt.bar(titles, counts, color=color)
-    plt.xticks(rotation=45, ha='right')
-    plt.ylabel("Counts")
-    plt.xlabel("Title")
-    plt.title(title)
-    plt.text(0.5, 1.5, f'Time taken: {time_taken:.4f} seconds',
-         ha='center', va='top',
-         transform=plt.gca().transAxes,
-         fontdict={'size': 16})
-    #plt.tight_layout()
-    plt.show()
-```
-
-Next, in a Python cell we'll run a query to find the top 10 most viewed pages for July 2013, measure how long it takes, and then plot the results and execution time:
-
-```python
-import time
-
-cursor = session.connection.cursor()
-
-query = """
-SELECT Title, COUNT(*) AS PageViews
-FROM BENCHMARK_INTERACTIVE.CUSTOMERS
-WHERE CounterID = 62
-  AND EventDate >= '2013-07-01'
-  AND EventDate <= '2013-07-31'
-  AND DontCountHits = 0
-  AND IsRefresh = 0
-  AND Title <> ''
-  AND REGEXP_LIKE(Title, '^[\\x00-\\x7F]+$')
-  AND LENGTH(Title) < 20
-GROUP BY Title
-ORDER BY PageViews DESC
-LIMIT 10;
-"""
-
-start_time = time.time()
-result = cursor.execute(query).fetchall()
-end_time = time.time()
-time_taken = end_time - start_time
-
-plot_data(result, "Page visit analysis (Interactive)", time_taken)
-```
-
-This gives the following plot:
-
-![](assets/iw-run-exec.png)
-
-### Compare to a standard warehouse
-
-![](assets/compare-to-standard-warehouse.png)
-
-To establish a performance baseline, we'll run an identical page-view query on a standard warehouse to measure and plot its results for comparison.
-
-We'll start by preparing the session for a performance benchmark using a SQL cell:
-
-```sql
-USE WAREHOUSE {{STANDARD_WH_NAME}};
-USE DATABASE {{DB_NAME}};
-ALTER SESSION SET USE_CACHED_RESULT = FALSE;
-```
-
-![](assets/py-std-run.png)
-
-Here, in a Python cell we'll run a top 10 page views analysis by executing the query, measuring its performance, and immediately plotting the results and execution time:
-
-```python
-query = """
-SELECT Title, COUNT(*) AS PageViews
-FROM BENCHMARK_FDN.HITS2_CSV
-WHERE CounterID = 62
-  AND EventDate >= '2013-07-01'
-  AND EventDate <= '2013-07-31'
-  AND DontCountHits = 0
-  AND IsRefresh = 0
-  AND Title <> ''
-  AND REGEXP_LIKE(Title, '^[\\x00-\\x7F]+$')
-  AND LENGTH(Title) < 20
-GROUP BY Title
-ORDER BY PageViews DESC
-LIMIT 10;
-"""
-
-start_time = time.time()
-result = cursor.execute(query).fetchall()
-end_time = time.time()
-time_taken = end_time - start_time
-
-plot_data(result, "Page visit analysis (Standard)", time_taken, '#5B5B5B')
-```
-
-![](assets/py-std-iw-run-exec.png)
-
 ### Sequential Query Benchmark
 
 To directly compare performance, we'll benchmark both the interactive and standard warehouses over 50 sequential runs and plot their latencies side-by-side in a grouped bar chart:
@@ -491,7 +375,7 @@ runs = 50
 
 def run_and_measure(count, mode):
     wh = INTERACTIVE_WH_NAME if mode == "iw" else STANDARD_WH_NAME
-    table = "BENCHMARK_INTERACTIVE.CUSTOMERS" if mode == "iw" else "BENCHMARK_FDN.HITS2_CSV"
+    table = "BENCHMARK_FDN.HITS2_CSV"
     query = f"""
         SELECT SearchEngineID, ClientIP, COUNT(*) AS c, SUM(IsRefresh), AVG(ResolutionWidth)
         FROM {table}
@@ -629,7 +513,7 @@ concurrency_levels = [1, 2, 4, 8]
 conn = session.connection
 
 print("Interactive warehouse:")
-results_iw = run_concurrent_benchmark(conn, INTERACTIVE_WH_NAME, "BENCHMARK_INTERACTIVE.CUSTOMERS", concurrency_levels)
+results_iw = run_concurrent_benchmark(conn, INTERACTIVE_WH_NAME, "BENCHMARK_FDN.HITS2_CSV", concurrency_levels)
 
 print("\nStandard warehouse:")
 results_std = run_concurrent_benchmark(conn, STANDARD_WH_NAME, "BENCHMARK_FDN.HITS2_CSV", concurrency_levels)
@@ -684,14 +568,14 @@ A final cell dynamically generates a written interpretation of the results, comp
 
 ## Conclusion and Resources
 
-In this guide, we explored how to address the challenge of low-latency, near real-time analytics using Snowflake's interactive warehouses and tables. We walked through the complete setup process, from creating the necessary database objects and loading data to configuring and attaching an interactive table to an interactive warehouse. The sequential and concurrent performance benchmarks clearly demonstrated the substantial latency improvements these specialized features provide over standard configurations, across both individual query runs and high-concurrency workloads. This confirms their value as a powerful solution for demanding use cases like live dashboards and high-throughput data APIs, where sub-second performance is critical.
+In this guide, we explored how to address the challenge of low-latency, near real-time analytics using Snowflake's interactive warehouses. We walked through the complete setup process, from creating the necessary database objects and loading data to configuring and attaching a standard table to an interactive warehouse via zero-copy interactive analytics. The sequential and concurrent performance benchmarks clearly demonstrated the substantial latency and throughput improvements this provides over a standard warehouse, across both individual query runs and high-concurrency workloads. This confirms its value as a powerful solution for demanding use cases like live dashboards and high-throughput data APIs, where sub-second performance is critical.
 
 ### What You Learned
-- Interactive warehouses and tables work together as a specialized pair to deliver low-latency analytics for use cases like live dashboards and APIs.
-- How to create, configure, and attach interactive warehouses and tables using SQL to prepare a high-performance analytics environment.
+- The core concepts behind Snowflake's Interactive Warehouses and how they deliver low-latency analytics for use cases like live dashboards and APIs.
+- How zero-copy interactive analytics lets an interactive warehouse query your standard, Iceberg, and dynamic tables directly, with no conversion required.
+- How to create, configure, and attach a table to an interactive warehouse using SQL to prepare a high-performance analytics environment.
 - How to run a sequential benchmark and visualize per-run latency and mean latency with standard deviation to prove interactive performance gains.
 - How to simulate real-world concurrent dashboard load and measure p50, p90, p99 latency and throughput across multiple concurrency levels.
-- How zero-copy interactive analytics lets an interactive warehouse query standard, Iceberg, and dynamic tables directly, with no `CREATE INTERACTIVE TABLE` conversion required.
 
 ### Related Resources
 
@@ -701,4 +585,4 @@ Data and Notebook:
 
 Documentation:
 - [Snowflake interactive tables and interactive warehouses](https://docs.snowflake.com/en/user-guide/interactive)
-- [Zero-copy interactive analytics: using standard and Iceberg tables (Public Preview)](https://docs.snowflake.com/en/user-guide/interactive#using-standard-and-iceberg-tables-public-preview)
+- [Zero-copy interactive analytics: using standard and Iceberg tables](https://docs.snowflake.com/en/user-guide/interactive#using-standard-and-iceberg-tables-public-preview)
