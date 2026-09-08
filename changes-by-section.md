@@ -2,7 +2,7 @@
 
 Columns: the quickstart/notebook section the change touched, which artifact it applies to (Quickstart, Notebook, or Quickstart, Notebook), and what was done.
 
-This reflects the current revision only (feedback from Davide Mauri):
+This reflects the current revision only (review feedback):
 - Use "Interactive Warehouses" (not "Interactive Warehouses and Tables") as the general term.
 - Remove Interactive Tables from the hands-on demo; make zero-copy interactive analytics (querying standard tables directly) the primary pattern, with a brief compatibility note on Interactive Tables.
 - Substantially increase the row count in `BENCHMARK_FDN.HITS2_CSV` so the concurrent benchmark shows a clearer latency/throughput advantage.
