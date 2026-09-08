@@ -1,7 +1,7 @@
 author: Chanin Nantasenamat
 id: getting-started-with-interactive-analytics
 summary: This guide demonstrates how to set up and use Snowflake's Interactive Analytics to achieve sub-second query performance.
-categories: snowflake-site:taxonomy/solution-center/certification/quickstart, snowflake-site:taxonomy/product/analytics, snowflake-site:taxonomy/snowflake-feature/interactive-tables, snowflake-site:taxonomy/snowflake-feature/interactive-warehouse
+categories: snowflake-site:taxonomy/solution-center/certification/quickstart, snowflake-site:taxonomy/product/analytics, snowflake-site:taxonomy/snowflake-feature/interactive-warehouse
 language: en
 environments: web
 status: Published
@@ -13,10 +13,6 @@ status: Published
 When it comes to near real-time (or sub-second) analytics, the ideal scenario involves achieving consistent, rapid query performance and managing costs effectively, even with large datasets and high user demand. 
 
 Snowflake's new Interactive Warehouses are designed to deliver on these needs. They provide a high-concurrency, low-latency serving layer for near real-time analytics, and can query your existing standard tables directly through zero-copy interactive analytics, with no data conversion required. This allows consistent, sub-second query performance for live dashboards and APIs with great price-for-performance. With this end-to-end solution, you can avoid operational complexities and tool sprawl.
-
-Here's how an interactive warehouse fits into a typical data analytics pipeline:
-
-![](assets/architecture.png)
 
 ### What You'll Learn
 - The core concepts behind Snowflake's Interactive Warehouses and how they provide low-latency analytics.
@@ -68,13 +64,7 @@ SELECT * FROM your_db.your_schema.any_standard_table WHERE ...;
 
 With this pattern, `ADD TABLES` is a performance optimization, not a requirement: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed. The hands-on demo below follows this exact pattern, querying a standard table directly on an interactive warehouse.
 
-### Interactive tables
-
-Before zero-copy interactive analytics, the only way to query data at interactive latency was to convert it into an interactive table, a specialized table type with different data ingestion methods and a more limited set of supported SQL statements and query operators than standard tables.
-
-![](assets/interactive-tables-and-warehouses.png)
-
-Interactive tables still exist and remain supported, mainly for compatibility with earlier interactive analytics setups. For new work, Snowflake recommends querying your standard tables directly through zero-copy interactive analytics instead, as shown in the hands-on demo below.
+> Note: Before zero-copy interactive analytics, the only way to query data at interactive latency was to convert it into an interactive table. Interactive tables still exist and remain supported, mainly for compatibility with earlier interactive analytics setups. For new work, Snowflake recommends querying your standard tables directly through zero-copy interactive analytics instead, as shown in the hands-on demo below.
 
 ### Use cases
 Interactive warehouses are built for one specific shape of work: simple, repetitive queries that must return in well under a second, run at high concurrency, against fresh data, and at a low cost per query. These aren't the complex, long-running transformations you'd send to a standard warehouse. Instead, they're the same handful of query patterns executed over and over, by thousands of users and, increasingly, by AI agents. Wherever that pattern shows up, an interactive warehouse is a strong fit.
@@ -299,22 +289,21 @@ if row_count >= TARGET_MULTIPLIER * 100_000 * 0.9:
     print(f"{FQ} already has {row_count:,} rows. Skipping data expansion.")
 else:
     print(f"Expanding {FQ} to roughly {TARGET_MULTIPLIER * 100_000:,} rows ...")
-    for _ in range(TARGET_MULTIPLIER - 1):
-        session.sql(f"""
-            INSERT INTO {FQ}
-            SELECT
-                DATEADD(day, UNIFORM(-3, 3, RANDOM()), EventDate),
-                CounterID,
-                CONCAT(TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.', TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.',
-                       TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.', TO_VARCHAR(UNIFORM(1, 255, RANDOM()))),
-                SearchEngineID,
-                SearchPhrase,
-                GREATEST(1, ResolutionWidth + UNIFORM(-100, 100, RANDOM())),
-                Title,
-                IsRefresh,
-                DontCountHits
-            FROM {FQ}
-        """).collect()
+    session.sql(f"""
+        INSERT INTO {FQ}
+        SELECT
+            DATEADD(day, UNIFORM(-3, 3, RANDOM()), t.EventDate),
+            t.CounterID,
+            CONCAT(TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.', TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.',
+                   TO_VARCHAR(UNIFORM(1, 255, RANDOM())), '.', TO_VARCHAR(UNIFORM(1, 255, RANDOM()))),
+            t.SearchEngineID,
+            t.SearchPhrase,
+            GREATEST(1, t.ResolutionWidth + UNIFORM(-100, 100, RANDOM())),
+            t.Title,
+            t.IsRefresh,
+            t.DontCountHits
+        FROM {FQ} AS t, TABLE(GENERATOR(ROWCOUNT => {TARGET_MULTIPLIER - 1})) AS g
+    """).collect()
     row_count = session.sql(f"SELECT COUNT(*) FROM {FQ}").collect()[0][0]
     print(f"Expanded {FQ} to {row_count:,} rows.")
 ```
@@ -584,5 +573,5 @@ Data and Notebook:
 - [Getting_Started_with_Interactive_Analytics.ipynb](https://github.com/Snowflake-Labs/snowflake-demo-notebooks/blob/main/Interactive_Analytics/Getting_Started_with_Interactive_Analytics.ipynb)
 
 Documentation:
-- [Snowflake interactive tables and interactive warehouses](https://docs.snowflake.com/en/user-guide/interactive)
+- [Snowflake interactive analytics](https://docs.snowflake.com/en/user-guide/interactive)
 - [Zero-copy interactive analytics: using standard and Iceberg tables](https://docs.snowflake.com/en/user-guide/interactive#using-standard-and-iceberg-tables-public-preview)
