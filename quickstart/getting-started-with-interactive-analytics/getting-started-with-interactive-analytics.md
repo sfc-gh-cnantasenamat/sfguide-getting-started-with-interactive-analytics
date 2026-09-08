@@ -64,6 +64,8 @@ SELECT * FROM your_db.your_schema.any_standard_table WHERE ...;
 
 With this pattern, `ADD TABLES` is a performance optimization, not a requirement: attaching a table proactively warms the cache, but unattached tables are still fully queryable and cached on demand when first accessed. The hands-on demo below follows this exact pattern, querying a standard table directly on an interactive warehouse.
 
+![](assets/run-queries-with-interactive-warehouse.png)
+
 > Note: Before zero-copy interactive analytics, the only way to query data at interactive latency was to convert it into an interactive table. Interactive tables still exist and remain supported, mainly for compatibility with earlier interactive analytics setups. For new work, Snowflake recommends querying your standard tables directly through zero-copy interactive analytics instead, as shown in the hands-on demo below.
 
 ### Use cases
