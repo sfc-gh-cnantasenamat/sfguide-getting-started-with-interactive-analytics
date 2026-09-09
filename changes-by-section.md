@@ -26,6 +26,7 @@ This reflects the current revision only (review feedback):
 | Compare to a standard warehouse | Quickstart, Notebook | Removed entirely (misleading single-query comparison). Its diagram was unreferenced after the removal and was dropped from the assets folder. |
 | Sequential Query Benchmark, Concurrent Query Benchmark | Quickstart, Notebook | Simplified the table reference so both the interactive and standard warehouse runs query `BENCHMARK_FDN.HITS2_CSV`. |
 | Sequential Query Benchmark | Quickstart, Notebook | Fixed `NameError: name 'cursor' is not defined` raised on first run: a prior revision dropped the `cursor` definition while keeping the calls to it. Added `import time` and `cursor = session.connection.cursor()` before `run_and_measure` is defined. |
+| Data setup and loading | Quickstart, Notebook | Added `LIMIT 100` to the `SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV` verification queries so this step doesn't scan the full ~2,000,000-row expanded table just to confirm the load worked. |
 | Conclusion and Resources | Quickstart | Reworded to drop the interactive-table-conversion framing and emphasize zero-copy plus the benchmark results. Corrected the documentation link title to match the live page title ("Snowflake interactive analytics"). |
 | Front matter | Quickstart | Removed the `snowflake-feature/interactive-tables` taxonomy tag, since the guide no longer focuses on Interactive Tables. |
 

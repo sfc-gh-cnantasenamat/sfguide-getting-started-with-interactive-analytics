@@ -169,7 +169,7 @@ Finally, we'll now retrieve contents from the table by performing a simple query
 
 ```sql
 USE WAREHOUSE {{STANDARD_WH_NAME}};
-SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV;
+SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV LIMIT 100;
 ```
 
 This essentially retrieves data from the `{{DB_NAME}}` database, `BENCHMARK_FDN` schema and `HITS2_CSV` table:
@@ -312,7 +312,7 @@ We can then verify the loaded data with a quick query:
 
 ```sql
 USE WAREHOUSE {{STANDARD_WH_NAME}};
-SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV;
+SELECT * FROM {{DB_NAME}}.BENCHMARK_FDN.HITS2_CSV LIMIT 100;
 ```
 
 This essentially retrieves data from the database, `BENCHMARK_FDN` schema and `HITS2_CSV` table:
