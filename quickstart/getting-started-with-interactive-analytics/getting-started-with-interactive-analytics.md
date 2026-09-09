@@ -358,7 +358,10 @@ A few things to keep in mind about fallback warehouses:
 To directly compare performance, we'll benchmark both the interactive and standard warehouses over 50 sequential runs and plot their latencies side-by-side in a grouped bar chart:
 
 ```python
+import time
 import numpy as np
+
+cursor = session.connection.cursor()
 
 runs = 50
 
