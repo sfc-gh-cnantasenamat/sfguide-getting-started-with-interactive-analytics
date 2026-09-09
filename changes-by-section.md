@@ -24,8 +24,7 @@ This reflects the current revision only (review feedback):
 | Attach interactive table to a warehouse | Quickstart, Notebook | Renamed to "Attach a table to the interactive warehouse"; now attaches `BENCHMARK_FDN.HITS2_CSV` (a standard table) instead of the removed `BENCHMARK_INTERACTIVE.CUSTOMERS` interactive table. Relabeled the accompanying diagram's "Interactive Table" box and caption to "Standard Table". |
 | Run queries with interactive warehouse | Quickstart, Notebook | Removed the misleading single-query comparison narrative, but kept its diagram (already relabeled to "Standard Table" in an earlier design refresh) and moved it into the "Zero-copy interactive analytics" section to illustrate querying a standard table directly on an interactive warehouse. |
 | Compare to a standard warehouse | Quickstart, Notebook | Removed entirely (misleading single-query comparison). Its diagram was unreferenced after the removal and was dropped from the assets folder. |
-| Sequential Query Benchmark | Quickstart, Notebook | Simplified the table reference so both the interactive and standard warehouse runs query `BENCHMARK_FDN.HITS2_CSV`. |
-| Concurrent Query Benchmark | Quickstart, Notebook | Simplified the table reference so both the interactive and standard warehouse runs query `BENCHMARK_FDN.HITS2_CSV`. |
+| Sequential Query Benchmark, Concurrent Query Benchmark | Quickstart, Notebook | Simplified the table reference so both the interactive and standard warehouse runs query `BENCHMARK_FDN.HITS2_CSV`. |
 | Conclusion and Resources | Quickstart | Reworded to drop the interactive-table-conversion framing and emphasize zero-copy plus the benchmark results. Corrected the documentation link title to match the live page title ("Snowflake interactive analytics"). |
 | Front matter | Quickstart | Removed the `snowflake-feature/interactive-tables` taxonomy tag, since the guide no longer focuses on Interactive Tables. |
 
@@ -34,5 +33,5 @@ This reflects the current revision only (review feedback):
 | File | Action |
 | --- | --- |
 | `create-interactive-table.png`, `compare-to-standard-warehouse.png`, `py-iw-run.png`, `py-std-run.png`, `iw-run-exec.png`, `py-std-iw-run-exec.png`, `architecture.png`, `interactive-tables-and-warehouses.png` | Removed from `quickstart/getting-started-with-interactive-analytics/assets/` (kept as a local backup only, not committed to this repo). |
-| `attach-interactive-table-to-warehouse.png` | Kept; box label and caption edited from "Interactive Table" to "Standard Table". |
-| `run-queries-with-interactive-warehouse.png` | Kept; already relabeled to "Standard Table" in an earlier design refresh. Moved from the removed "Run queries with interactive warehouse" section into "Zero-copy interactive analytics". |
+| `attach-interactive-table-to-warehouse.png` → renamed to `attach-standard-table-to-warehouse.png` | Redesigned: "Standard Table" now branches into two paths ("Standard Warehouse" and, via a "Zero-copy approach" arrow, "Interactive Warehouse"). Incorporated the "Querying a standard table via interactive warehouse gives improved performance" caption from the now-removed `run-queries-with-interactive-warehouse.png`. Renamed since the filename no longer references interactive tables. |
+| `run-queries-with-interactive-warehouse.png` | Removed. Its caption and concept are now covered by `attach-standard-table-to-warehouse.png`, so the separate diagram and its `.md` image reference were dropped. |
