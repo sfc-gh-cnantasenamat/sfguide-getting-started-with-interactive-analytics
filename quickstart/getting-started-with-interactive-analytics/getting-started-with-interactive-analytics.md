@@ -29,7 +29,7 @@ You will build a complete, functioning interactive analytics environment in Snow
 - Access to a [Snowflake account](https://signup.snowflake.com/?utm_source=snowflake-devrel&utm_medium=developer-guides&utm_cta=developer-guides)
 - Basic knowledge of SQL and Python.
 - Familiarity with data warehousing and performance concepts.
-- A Snowflake role with privileges to create warehouses and tables (*i.e.*, `ACCOUNTADMIN` is used in the notebook).
+- A Snowflake role with privileges to create warehouses and tables (*i.e.*, `SYSADMIN` is used in the notebook).
 
 ## Understand Interactive Warehouses
 
@@ -204,7 +204,7 @@ Interactive Warehouses are now generally available (GA) and enabled by default o
 The following SQL cell creates the standard warehouse, database, and schemas used throughout the notebook. All statements use `IF NOT EXISTS`, so this cell is safe to re-run:
 
 ```sql
-USE ROLE ACCOUNTADMIN;
+USE ROLE SYSADMIN;
 
 -- Create the compute and database objects used throughout this notebook (idempotent)
 CREATE WAREHOUSE IF NOT EXISTS {{STANDARD_WH_NAME}} WITH WAREHOUSE_SIZE = 'X-SMALL';
